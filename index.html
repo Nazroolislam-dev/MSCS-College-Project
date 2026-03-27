@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logistics Weather Pro Monitor</title>
+    <style>
+        * { box-sizing: border-box; transition: all 0.4s ease; }
+        body { 
+            margin: 0; padding: 0; min-height: 100vh;
+            background: #000; 
+            background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=1400');
+            background-size: cover; background-position: center; background-attachment: fixed;
+            color: white; font-family: 'Segoe UI', sans-serif;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+
+        /* Naya Clock Style */
+        #liveClock { font-size: 1.2rem; font-weight: bold; color: #00f2fe; margin-bottom: 10px; letter-spacing: 2px; }
+
+        .container { display: flex; gap: 20px; width: 95%; max-width: 1000px; flex-wrap: wrap; padding: 10px; }
+        
+        .card, .risk-card { 
+            flex: 1; min-width: 320px; min-height: 500px; 
+            background: rgba(15, 23, 42, 0.6); padding: 25px; border-radius: 25px; 
+            text-align: center; border: 1px solid rgba(255, 255, 255, 0.15); 
+            backdrop-filter: blur(12px); box-shadow: 0 15px 35px rgba(0,0,0,0.7);
+            display: flex; flex-direction: column; justify-content: center;
+        }
+
+        .input-group { display: flex; gap: 8px; margin-bottom: 20px; }
+        input { flex: 1; padding: 12px 18px; border-radius: 25px; border: none; outline: none; font-size: 14px; font-weight: 600; }
+        .check-btn { border-radius: 25px; background: #00f2fe; color: #000; font-weight: bold; cursor: pointer; padding: 0 18px; border: none; }
+        .mic-btn { border-radius: 50%; width: 42px; height: 42px; background: #ff2e63; color: white; border: none; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; }
+        
+        .status-circle { width: 90px; height: 90px; border-radius: 50%; margin: 15px auto; background: rgba(255,255,255,0.05); border: 6px solid rgba(255,255,255,0.1); }
+        #displayTemp { font-size: 4rem; margin: 5px 0; font-weight: 200; }
+        
+        /* Weather Icon Style */
+        #weatherIcon { width: 80px; height: 80px; margin: 0 auto; }
+
+        .data-box { margin-top: 12px; padding: 10px; border-radius: 12px; border: 1px solid rgba(0, 242, 254, 0.2); background: rgba(0, 242, 254, 0.05); font-weight: 700; font-size: 15px; }
+        
+        /* Checklist Style */
+        #safetyTips { font-size: 0.85rem; color: #ffeb3b; margin-top: 15px; font-weight: bold; border-top: 1px dotted #555; padding-top: 10px; }
+
+        #historyList { margin-top: 15px; display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; }
+        .history-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(0, 242, 254, 0.3); color: white; padding: 5px 12px; border-radius: 15px; cursor: pointer; font-size: 11px; }
+    </style>
+</head>
+<body onclick="unlockAudio()">
+    
+    <div id="liveClock">00:00:00 AM | LOADING...</div>
+
+    <div class="container">
+        <div class="card">
+            <h2 style="color: #00f2fe; margin:0;">LOGISTICS WEATHER</h2>
+            <div class="input-group" style="margin-top:15px;">
+                <input type="text" id="cityInput" placeholder="Enter City..." onkeydown="if(event.key==='Enter') getWeather()">
+                <button class="check-btn" onclick="getWeather()">CHECK</button>
+                <button class="mic-btn" onclick="startVoice()">🎤</button>
+            </div>
+            <img id="weatherIcon" src="https://openweathermap.org/img/wn/10d@2x.png" alt="icon">
+            <h1 id="displayTemp">--°C</h1>
+            <h2 id="displayCity">CITY NAME</h2>
+            <div style="display: flex; justify-content: space-around; margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;">
+                <div>Humidity<br><b id="humidityDisplay" style="color: #00f2fe;">--%</b></div>
+                <div>Wind Speed<br><b id="windDisplay" style="color: #00f2fe;">-- km/h</b></div>
+            </div>
+            <div id="historyList"></div>
+        </div>
+
+        <div class="risk-card">
+            <h2 style="margin:0;">RISK STATUS</h2>
+            <div id="statusIndicator" class="status-circle"></div>
+            <h1 id="riskLevel" style="font-size: 2.5rem; margin:10px 0;">READY</h1>
+            <div class="data-box">SAFE SPEED: <span id="safeSpeed" style="color: #00f2fe;">--</span></div>
+            <div class="data-box" style="border-color: #ffeb3b; color: #ffeb3b;">FUEL IMPACT: <b id="fuelAdvice">NORMAL</b></div>
+            <div id="safetyTips">DRIVING PROTOCOL: STANDBY</div>
+            <p id="weatherDesc" style="margin-top: 15px; font-style: italic; opacity: 0.7; font-size: 13px;">Waiting for input...</p>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
